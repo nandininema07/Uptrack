@@ -1,7 +1,6 @@
-// /client/src/config/api.ts
 export function buildApiUrl(path: string): string {
-  const cleanedPath = path.replace(/^\/?api\/?/, ""); // remove any accidental /api
+  const cleanedPath = path.replace(/^\/?api\/?/, "");
   return import.meta.env.PROD
-    ? `/${cleanedPath}` // serve directly from domain in production
-    : `/${cleanedPath}`; // proxy to backend in dev
+    ? `/api/${cleanedPath}` // only one /api in production
+    : `/${cleanedPath}`;
 }
