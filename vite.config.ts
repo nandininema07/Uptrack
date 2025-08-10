@@ -7,6 +7,7 @@ import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(async () => {
+  
   const plugins = [
     react(),
     runtimeErrorOverlay(),
@@ -18,6 +19,7 @@ export default defineConfig(async () => {
   }
 
   return {
+    base: '/',
     plugins,
     resolve: {
       alias: {

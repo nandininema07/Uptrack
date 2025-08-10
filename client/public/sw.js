@@ -4,28 +4,59 @@ const urlsToCache = [
   '/index.html',
   '/manifest.json',
   '/icons/icon-192x192.svg',
-  '/icons/icon-512x512.svg'
+  '/icons/icon-512x512.svg',
 ];
 
-// Install event - cache resources
+// Install event - cache static resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Opened cache');
+      return cache.addAll(urlsToCache);
+    })
   );
 });
 
-// Fetch event - serve from cache when offline
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            console.log('Deleting old cache:', cache);
+            return caches.delete(cache);
+          }
+        })
+      )
+    )
+  );
+});
+
+// Fetch event - cache assets on demand and fallback for others
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  if (url.pathname.startsWith('/assets/')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          return fetch(event.request).then((networkResponse) => {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          });
+        })
+      )
+    );
+    return;
+  }
+
+  // For other requests, try cache first, then network fallback
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      })
+    caches.match(event.request).then((response) => response || fetch(event.request))
   );
 });
 
@@ -39,7 +70,7 @@ self.addEventListener('sync', (event) => {
 async function syncHabits() {
   try {
     const pendingCompletions = await getPendingCompletions();
-    
+
     for (const completion of pendingCompletions) {
       try {
         const response = await fetch('/api/completions', {
@@ -47,11 +78,14 @@ async function syncHabits() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(completion)
+          body: JSON.stringify(completion),
         });
-        
-        // Remove from pending after successful sync
-        await removePendingCompletion(completion.id);
+
+        if (response.ok) {
+          await removePendingCompletion(completion.id);
+        } else {
+          console.error('Failed to sync completion: server error', response.status);
+        }
       } catch (error) {
         console.error('Failed to sync completion:', error);
       }
@@ -70,25 +104,23 @@ self.addEventListener('push', (event) => {
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: '1'
+      primaryKey: '1',
     },
     actions: [
       {
         action: 'complete',
         title: 'Mark Complete',
-        icon: '/icons/check-icon.svg'
+        icon: '/icons/check-icon.svg',
       },
       {
         action: 'view',
         title: 'View Habits',
-        icon: '/icons/view-icon.svg'
-      }
-    ]
+        icon: '/icons/view-icon.svg',
+      },
+    ],
   };
 
-  event.waitUntil(
-    self.registration.showNotification('HabitFlow', options)
-  );
+  event.waitUntil(self.registration.showNotification('HabitFlow', options));
 });
 
 // Handle notification clicks
@@ -96,20 +128,11 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   if (event.action === 'complete') {
-    // Handle quick completion
-    event.waitUntil(
-      clients.openWindow('/?action=quick-complete')
-    );
+    event.waitUntil(clients.openWindow('/?action=quick-complete'));
   } else if (event.action === 'view') {
-    // Open habits view
-    event.waitUntil(
-      clients.openWindow('/?screen=habits')
-    );
+    event.waitUntil(clients.openWindow('/?screen=habits'));
   } else {
-    // Default action - open app
-    event.waitUntil(
-      clients.openWindow('/')
-    );
+    event.waitUntil(clients.openWindow('/'));
   }
 });
 
@@ -117,19 +140,19 @@ self.addEventListener('notificationclick', (event) => {
 async function getPendingCompletions() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('HabitFlowDB', 1);
-    
+
     request.onerror = () => reject(request.error);
-    
+
     request.onsuccess = () => {
       const db = request.result;
       const transaction = db.transaction(['pendingCompletions'], 'readonly');
       const store = transaction.objectStore('pendingCompletions');
       const getAllRequest = store.getAll();
-      
+
       getAllRequest.onsuccess = () => resolve(getAllRequest.result);
       getAllRequest.onerror = () => reject(getAllRequest.error);
     };
-    
+
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains('pendingCompletions')) {
@@ -142,15 +165,15 @@ async function getPendingCompletions() {
 async function removePendingCompletion(id) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('HabitFlowDB', 1);
-    
+
     request.onerror = () => reject(request.error);
-    
+
     request.onsuccess = () => {
       const db = request.result;
       const transaction = db.transaction(['pendingCompletions'], 'readwrite');
       const store = transaction.objectStore('pendingCompletions');
       const deleteRequest = store.delete(id);
-      
+
       deleteRequest.onsuccess = () => resolve();
       deleteRequest.onerror = () => reject(deleteRequest.error);
     };
