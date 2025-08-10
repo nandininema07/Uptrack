@@ -5,3 +5,7 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .vercel
+
+client/.env
+client/node_modules
+client/.env.production
