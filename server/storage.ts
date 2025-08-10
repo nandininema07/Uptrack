@@ -9,7 +9,7 @@ import {
     type InsertNotification,
     type HabitWithStats,
     type DailyStats
-  } from "../shared/schema";
+  } from "./schema";
   import { randomUUID } from "node:crypto";
   
   export interface IStorage {
