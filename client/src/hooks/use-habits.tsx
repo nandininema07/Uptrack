@@ -5,8 +5,8 @@ import { toast } from "../hooks/use-toast";
 
 export function useHabits() {
   return useQuery<HabitWithStats[]>({
-    queryKey: ["habits"],  // simple key
-    queryFn: () => apiRequest("GET", "/api/habits").then(res => res.json()), // actual fetch URL includes /api
+    queryKey: ["habits"],
+    queryFn: () => apiRequest("GET", "/habits").then(res => res.json()),
   });
 }
 
@@ -15,11 +15,11 @@ export function useCreateHabit() {
 
   return useMutation({
     mutationFn: async (habit: InsertHabit) => {
-      const response = await apiRequest("POST", "/api/habits", habit);
+      const response = await apiRequest("POST", "/habits", habit);
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["habits"] }); // invalidate simple key
+      queryClient.invalidateQueries({ queryKey: ["habits"] });
       toast({
         title: "Success!",
         description: "Your new habit has been created.",
@@ -40,7 +40,7 @@ export function useUpdateHabit() {
 
   return useMutation({
     mutationFn: async ({ id, ...habit }: { id: string } & Partial<InsertHabit>) => {
-      const response = await apiRequest("PATCH", `/api/habits/${id}`, habit);
+      const response = await apiRequest("PATCH", `/habits/${id}`, habit);
       return response.json();
     },
     onSuccess: () => {
@@ -65,7 +65,7 @@ export function useDeleteHabit() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/habits/${id}`);
+      await apiRequest("DELETE", `/habits/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["habits"] });
@@ -95,10 +95,10 @@ export function useToggleHabitCompletion() {
     }) => {
       if (completed) {
         const completion: InsertCompletion = { habitId, date };
-        const response = await apiRequest("POST", `/api/habits/${habitId}/completions`, completion);
+        const response = await apiRequest("POST", `/habits/${habitId}/completions`, completion);
         return response.json();
       } else {
-        await apiRequest("DELETE", `/api/habits/${habitId}/completions/${date}`);
+        await apiRequest("DELETE", `/habits/${habitId}/completions/${date}`);
       }
     },
     onSuccess: (_, { completed }) => {
@@ -124,7 +124,7 @@ export function useToggleHabitCompletion() {
 export function useNotifications() {
   return useQuery({
     queryKey: ["notifications"],
-    queryFn: () => apiRequest("GET", "/api/notifications").then(res => res.json()),
+    queryFn: () => apiRequest("GET", "/notifications").then(res => res.json()),
   });
 }
 
@@ -133,7 +133,7 @@ export function useMarkNotificationRead() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("PATCH", `/api/notifications/${id}/read`);
+      await apiRequest("PATCH", `/notifications/${id}/read`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
@@ -145,7 +145,7 @@ export function useDailyStats(startDate: string, endDate: string) {
   return useQuery({
     queryKey: ["daily-stats", startDate, endDate],
     queryFn: () =>
-      apiRequest("GET", `/api/analytics/daily-stats?startDate=${startDate}&endDate=${endDate}`).then(res =>
+      apiRequest("GET", `/analytics/daily-stats?startDate=${startDate}&endDate=${endDate}`).then(res =>
         res.json()
       ),
   });
