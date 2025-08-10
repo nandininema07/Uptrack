@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>HabitFlow - Your Personal Habit Tracker</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366F1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="HabitFlow">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.svg">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Build better habits with HabitFlow - a smart habit tracker with streak management, progress visualization, and offline support. Install as a PWA for the best experience.">
+    <meta name="keywords" content="habit tracker, habits, productivity, streaks, PWA, mobile app">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="HabitFlow - Your Personal Habit Tracker">
+    <meta property="og:description" content="Build better habits with smart streak tracking and beautiful progress visualization">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/icons/icon-512x512.svg">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script type="module" crossorigin src="/assets/index-lt8gZf1l.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C0lR2UVf.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Register Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+</html>
