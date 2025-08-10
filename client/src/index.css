@@ -122,10 +122,7 @@
   .text-foreground {
     color: var(--foreground);
   }
-  .border-border {
-    @apply border border-gray-300;
-  }
-
+  
   .progress-ring {
     transform: rotate(-90deg);
   }
