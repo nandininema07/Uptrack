@@ -1,4 +1,11 @@
+// src/config/api.ts
 export function buildApiUrl(path: string) {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
-  return baseUrl + path;
+  let baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+
+  // Ensure baseUrl ends with a slash and path does not start with a slash
+  if (baseUrl.endsWith('/') && path.startsWith('/')) {
+    path = path.slice(1);
+  }
+
+  return `${baseUrl}${path}`;
 }
