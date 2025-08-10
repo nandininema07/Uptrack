@@ -39,12 +39,12 @@ app.use((req, res, next) => {
   const server = await registerRoutes(app);
 
   // Serve frontend static assets from 'dist' folder
-  const distPath = path.resolve(process.cwd(), "client","dist");
+  const distPath = path.resolve(process.cwd(), "dist");
   app.use(express.static(distPath));
 
   // For SPA: serve index.html on all non-API routes
   app.get("*", (req: Request, res: Response, next: NextFunction) => {
-    if (req.path.startsWith("/api")) return next();
+    if (req.path.startsWith("/api") || req.path.includes(".")) return next();
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 
