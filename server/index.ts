@@ -7,10 +7,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Logging middleware for /api routes
 app.use((req, res, next) => {
   const start = Date.now();
   const pathReq = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let capturedJsonResponse: Record<string, any> | undefined;
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
@@ -36,9 +37,11 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  // Mount routes under /api
+  const router = await registerRoutes();
+  app.use("/api", router);
 
-  // Serve frontend static assets from 'dist' folder
+  // Serve frontend static assets from 'dist'
   const distPath = path.resolve(process.cwd(), "dist");
   app.use(express.static(distPath));
 
@@ -48,23 +51,16 @@ app.use((req, res, next) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 
+  // Error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-
     res.status(status).json({ message });
     throw err;
   });
 
   const port = parseInt(process.env.PORT || "5000", 10);
-  server.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      console.log(`Backend server running on port ${port}`);
-    }
-  );
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Backend server running on port ${port}`);
+  });
 })();
