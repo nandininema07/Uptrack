@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useHabits, useUpdateHabit, useDeleteHabit } from "../hooks/use-habits";
 import { type HabitWithStats } from "../../../shared/schema";
-// import { getHabitCategoryIcon, getHabitCategoryColor, calculateCompletionRate } from "../lib/habits-utils";
 
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
-// import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components /ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../components/ui/alert-dialog";
-// import HabitCard from "../components/habit-card";
 import AddHabitModal from "../components/add-habit-modal";
 
 const categories = ["All", "Health & Fitness", "Learning & Education", "Personal Development", "Work & Productivity", "Social & Relationships", "Other"];
@@ -18,13 +15,12 @@ export default function HabitsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [editingHabit, setEditingHabit] = useState<HabitWithStats | null>(null);
   const [habitToDelete, setHabitToDelete] = useState<HabitWithStats | null>(null);
-  
+
   const { data: habits = [], isLoading } = useHabits();
   const updateHabit = useUpdateHabit();
   const deleteHabit = useDeleteHabit();
-  
+
   // Filter habits based on search and category
   const filteredHabits = habits.filter(habit => {
     const matchesSearch = habit.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -32,10 +28,6 @@ export default function HabitsPage() {
     const matchesCategory = selectedCategory === "All" || habit.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  const handleEditHabit = (habit: HabitWithStats) => {
-    setEditingHabit(habit);
-  };
 
   const handleDeleteHabit = async (habit: HabitWithStats) => {
     setHabitToDelete(habit);
@@ -109,7 +101,7 @@ export default function HabitsPage() {
               className="pl-10 bg-muted border-0 focus:ring-2 focus:ring-primary"
             />
           </div>
-          
+
           {/* Category Filter */}
           <div className="flex space-x-2 overflow-x-auto pb-2">
             {categories.map((category) => (
@@ -136,8 +128,8 @@ export default function HabitsPage() {
               {searchQuery || selectedCategory !== "All" ? "No habits found" : "No habits yet"}
             </h4>
             <p className="text-muted-foreground mb-4">
-              {searchQuery || selectedCategory !== "All" 
-                ? "Try adjusting your search or filter" 
+              {searchQuery || selectedCategory !== "All"
+                ? "Try adjusting your search or filter"
                 : "Create your first habit to get started"
               }
             </p>
@@ -154,11 +146,11 @@ export default function HabitsPage() {
               <div key={habit.id} className="bg-card rounded-xl p-4 border border-border shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
-                    <div 
+                    <div
                       className="w-10 h-10 rounded-full flex items-center justify-center"
                       style={{ backgroundColor: `${habit.color}20` }}
                     >
-                      <i 
+                      <i
                         className={`fas ${habit.icon}`}
                         style={{ color: habit.color ?? "#6366F1" }}
                       />
@@ -166,14 +158,14 @@ export default function HabitsPage() {
                     <div>
                       <h4 className="font-medium text-card-foreground">{habit.name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {habit.frequency === 'daily' ? 'Daily' : 
+                        {habit.frequency === 'daily' ? 'Daily' :
                          habit.frequency === 'alternate' ? 'Alternate days' :
                          habit.frequency === 'weekly' ? 'Weekly' : 'Custom'}
                         {habit.reminderTime && ` at ${habit.reminderTime}`}
                       </p>
                     </div>
                   </div>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
@@ -181,15 +173,11 @@ export default function HabitsPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleEditHabit(habit)}>
-                        <i className="fas fa-edit mr-2" />
-                        Edit
-                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleToggleActive(habit)}>
                         <i className={`fas ${habit.isActive ? 'fa-pause' : 'fa-play'} mr-2`} />
                         {habit.isActive ? 'Pause' : 'Resume'}
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => handleDeleteHabit(habit)}
                         className="text-destructive focus:text-destructive"
                       >
@@ -199,7 +187,7 @@ export default function HabitsPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                
+
                 {/* Progress Bar */}
                 <div className="mb-3">
                   <div className="flex justify-between text-sm mb-1">
@@ -209,13 +197,13 @@ export default function HabitsPage() {
                     </span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
-                    <div 
-                      className="bg-secondary h-2 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-secondary h-2 rounded-full transition-all duration-300"
                       style={{ width: `${habit.completionRate}%` }}
                     />
                   </div>
                 </div>
-                
+
                 {/* Streak Info */}
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-4">

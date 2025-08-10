@@ -118,7 +118,7 @@ export function getTodaysScheduledHabits(habits: HabitWithStats[]): HabitWithSta
 }
 
 export function getHabitCompletionStats(habits: HabitWithStats[]) {
-  const today = new Date().toISOString().split('T')[0];
+  // const today = new Date().toISOString().split('T')[0];
   const scheduledToday = getTodaysScheduledHabits(habits);
   const completedToday = scheduledToday.filter(habit => habit.completedToday);
   
