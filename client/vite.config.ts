@@ -19,7 +19,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: "../dist", // Sends built files to root/dist for easy deploy
+    outDir: "dist",
     emptyOutDir: true
   }
 });

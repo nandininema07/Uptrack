@@ -98,11 +98,7 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  html {
+    html {
     scroll-behavior: smooth;
   }
 
