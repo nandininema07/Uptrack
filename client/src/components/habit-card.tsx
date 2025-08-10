@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { type HabitWithStats } from "../../../shared/schema";
 import { useToggleHabitCompletion } from "../hooks/use-habits";
-import { getStreakEmoji, formatTime, getHabitCategoryIcon, getHabitStatusForDate } from "../lib/habits-utils";
+import { getStreakEmoji, formatTime, getHabitStatusForDate } from "../lib/habits-utils";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";

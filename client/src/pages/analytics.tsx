@@ -133,7 +133,7 @@ export default function AnalyticsPage() {
             <CardTitle className="text-lg">Weekly Progress</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {weeklyStats.map((day: any, index: any) => {
+            {weeklyStats.map((day: any) => {
               const date = new Date(day.date);
               const dayName = weekDays[date.getDay()];
               
@@ -180,11 +180,11 @@ export default function AnalyticsPage() {
                   <div className="flex items-center space-x-3">
                     <div 
                       className="w-8 h-8 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: `${habit.color}20` }}
+                      style={{ backgroundColor: `${habit.color ?? '#6366F1'}20` }}
                     >
                       <i 
                         className={`fas ${habit.icon} text-xs`}
-                        style={{ color: habit.color }}
+                        style={{ color: habit.color ?? '#6366F1' }}
                       />
                     </div>
                     <div>

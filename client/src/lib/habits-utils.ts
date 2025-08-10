@@ -34,9 +34,8 @@ export function getHabitStatusForDate(habit: HabitWithStats, dateStr: string): '
     return 'completed';
   }
   
-  const today = new Date().toISOString().split('T')[0];
   const targetDate = new Date(dateStr);
-  const currentDate = new Date(today);
+  const currentDate = new Date();
   
   if (targetDate < currentDate) {
     return 'missed';

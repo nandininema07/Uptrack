@@ -7,7 +7,7 @@ import { z } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Habits endpoints
-  app.get("/api/habits", async (req, res) => {
+  app.get("/api/habits", async (_req, res) => {
     try {
       const habits = await storage.getHabitsWithStats();
       res.json(habits);

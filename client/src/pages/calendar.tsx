@@ -161,7 +161,7 @@ export default function CalendarPage() {
             <div className="grid grid-cols-7 gap-1">
               {days.map((dayInfo, index) => {
                 const dateStr = dayInfo.date.toISOString().split('T')[0];
-                const { scheduled, completed, completionRate } = getHabitStatusForDay(dayInfo.date);
+                const { scheduled, completed } = getHabitStatusForDay(dayInfo.date);
                 const todayFlag = isToday(dayInfo.date);
                 
                 return (

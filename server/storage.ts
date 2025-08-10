@@ -49,9 +49,7 @@ import {
       // Removed hardcoded seed data - habits will be created by users
     }
   
-    private seedData() {
-      // Seed data removed - habits will be created dynamically by users
-    }
+
   
     async getHabits(): Promise<Habit[]> {
       return Array.from(this.habits.values()).filter(h => h.isActive);
