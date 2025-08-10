@@ -9,3 +9,5 @@ vite.config.ts.*
 client/.env
 client/node_modules
 client/.env.production
+
+.env.production

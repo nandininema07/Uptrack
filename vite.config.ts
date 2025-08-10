@@ -1,43 +1,47 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { fileURLToPath } from "url";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-export default defineConfig({
-  plugins: [
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig(async () => {
+  const plugins = [
     react(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-        ]
-      : []),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
-    },
-  },
-  root: path.resolve(import.meta.dirname, "client"),
-  build: {
-    outDir: 'dist', // Removed trailing space
-    emptyOutDir: true,
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
+  ];
+
+  if (process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined) {
+    const { cartographer } = await import("@replit/vite-plugin-cartographer");
+    plugins.push(cartographer());
+  }
+
+  return {
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "client", "src"),
+        "@shared": path.resolve(__dirname, "shared"),
+        "@assets": path.resolve(__dirname, "attached_assets"),
       },
     },
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
+    root: path.resolve(__dirname, "client"),
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
     },
-  },
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://localhost:5000",
+          changeOrigin: true,
+        },
+      },
+      fs: {
+        strict: true,
+        deny: ["**/.*"],
+      },
+    },
+  };
 });
