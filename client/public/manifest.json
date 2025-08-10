@@ -53,22 +53,7 @@
         ]
       }
     ],
-    "screenshots": [
-      {
-        "src": "/icons/screenshot-wide.png",
-        "sizes": "1280x720",
-        "type": "image/png",
-        "form_factor": "wide",
-        "label": "HabitFlow desktop view"
-      },
-      {
-        "src": "/icons/screenshot-narrow.png", 
-        "sizes": "640x1136",
-        "type": "image/png",
-        "form_factor": "narrow",
-        "label": "HabitFlow mobile view"
-      }
-    ],
+    
     "prefer_related_applications": false
   }
   
