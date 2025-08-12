@@ -1,8 +1,7 @@
-# HabitFlow - Personal Habit Tracker
+# UpTrack - Personal Tracker
 
 ## Overview
-
-HabitFlow is a comprehensive Progressive Web Application (PWA) for personal habit tracking and management. The application helps users build better habits through smart streak tracking, progress visualization, and offline support. It features a modern, responsive design with both light and dark themes, intuitive habit management tools, detailed analytics, and notification systems for habit reminders.
+UpTrack is a comprehensive Progressive Web Application (PWA) for personal tracking and management. The application helps users build consistency through smart streak tracking, progress visualization, and offline support. It features a modern, responsive design with both light and dark themes, intuitive habit management tools, detailed analytics, and notification systems for habit reminders.
 
 The system is built as a full-stack application with a React frontend, Express.js backend, and PostgreSQL database, designed to work seamlessly across desktop and mobile devices with PWA capabilities.
 
