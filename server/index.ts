@@ -1,5 +1,5 @@
 /// <reference types="node" />
-require("dotenv").config();
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
 import { registerRoutes } from "./routes.js";
