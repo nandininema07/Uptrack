@@ -11,3 +11,4 @@ client/.env.production
 
 .env.production
 .env.development
+.env
